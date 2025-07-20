@@ -8,14 +8,9 @@ fi
 
 echo "Using SSH_KEY: ${SSH_KEY}"
 
-# Build with SSH key using --impure to allow environment access
-nix build --impure --expr "
-  let
-    flake = builtins.getFlake (toString ./.);
-    sshKey = builtins.getEnv \"SSH_KEY\";
-  in
-    flake.packages.x86_64-linux.isoWithSshKey sshKey
-"
+
+export NIX_PATH=nixos-config=$PWD/iso.nix:nixpkgs=channel:nixos-$NIX_VERSION
+nix-build '<nixpkgs/nixos>' -A config.system.build.isoImage
 
 mkdir -p /iso
 cp result/iso/* /iso
