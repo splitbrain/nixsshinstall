@@ -5,7 +5,7 @@
 
   outputs = { self, nixpkgs }: {
     # Function to build ISO with SSH key
-    packages.x86_64-linux.isoWithSshKey = sshKey: 
+    packages.x86_64-linux.isoWithSshKey = sshKey:
       if sshKey == "" then
         throw "SSH key cannot be empty"
       else
@@ -19,6 +19,7 @@
               systemd.services.sshd.wantedBy = pkgs.lib.mkForce [ "multi-user.target" ];
 
               isoImage.squashfsCompression = "gzip -Xcompression-level 1";
+              isoImage.forceTextMode = true;
             })
           ];
         }).config.system.build.isoImage;
